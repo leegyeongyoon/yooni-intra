@@ -4,6 +4,7 @@ import com.yooni.intra.exception.detailException.UserNotFoundException;
 import com.yooni.intra.model.response.CommonResult;
 import com.yooni.intra.common.service.ResponseService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.MessageSource;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Component;
@@ -18,11 +19,14 @@ import javax.servlet.http.HttpServletRequest;
 public class ExceptionAdvice {
 
     @Autowired
-    ResponseService responseService;
+    private ResponseService responseService;
+
+    @Autowired
+    private MessageSource messageSource;
 
     @ExceptionHandler(Exception.class)
     @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
     protected CommonResult userNotFountException(HttpServletRequest request, UserNotFoundException e){
-        return responseService.getFailResult();
+        return responseService.getFailResult(Integer.valueOf(getMessage("unKnown.code")));
     }
 }
