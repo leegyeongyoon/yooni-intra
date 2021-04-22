@@ -1,4 +1,4 @@
-package com.yooni.intra.config;
+package com.yooni.intra.config.message;
 
 import net.rakugakibox.util.YamlResourceBundle;
 import org.springframework.beans.factory.annotation.Value;
@@ -33,10 +33,10 @@ public class MessageConfiguration implements WebMvcConfigurer {
         return localeChangeInterceptor;
     }
 
-//    @Override // 인터셉트 레지스트리 등록
-//    public void addInterCeptor(InterceptorRegistry registry){
-//        registry.addInterceptor(localeChangeInterceptor());
-//    }
+    @Override// 인터셉트 레지스트리 등록
+    public void addInterceptors(InterceptorRegistry registry){
+        registry.addInterceptor(localeChangeInterceptor());
+    }
 
     @Bean //yml 파일 참조
     public MessageSource messageSource(
@@ -44,12 +44,17 @@ public class MessageConfiguration implements WebMvcConfigurer {
             @Value("${spring.messages.encoding}") String encoding
     ){
         YamlMessageSource ms = new YamlMessageSource();
+        ms.setBasename(basename);
+        ms.setDefaultEncoding(encoding);
+        ms.setAlwaysUseMessageFormat(true);
+        ms.setUseCodeAsDefaultMessage(true);
+        ms.setFallbackToSystemLocale(true);
         return ms;
     }
-    private static class YamlMessageSource extends ResourceBundleMessageSource{
+    private static class YamlMessageSource extends ResourceBundleMessageSource {
 
         @Override
-        protected ResourceBundle doGetBundle(String basename,Locale locale) throws MissingResourceException {
+        protected ResourceBundle doGetBundle(String basename, Locale locale) throws MissingResourceException {
             return ResourceBundle.getBundle(basename,locale, YamlResourceBundle.Control.INSTANCE);
         }
     }

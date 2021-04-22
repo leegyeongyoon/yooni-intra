@@ -6,6 +6,7 @@ import com.yooni.intra.common.service.ResponseService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.MessageSource;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.context.i18n.LocaleContextHolder;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Component;
 import org.springframework.web.bind.annotation.ExceptionHandler;
@@ -26,7 +27,20 @@ public class ExceptionAdvice {
 
     @ExceptionHandler(Exception.class)
     @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
+    protected CommonResult defaultException(HttpServletRequest request, Exception e){
+        return responseService.getFailResult(Integer.valueOf(getMessage("unKnown.code")),getMessage("unKnown.msg"));
+    }
+
+    @ExceptionHandler(UserNotFoundException.class)
+    @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
     protected CommonResult userNotFountException(HttpServletRequest request, UserNotFoundException e){
-        return responseService.getFailResult(Integer.valueOf(getMessage("unKnown.code")));
+        return responseService.getFailResult(Integer.valueOf(getMessage("userNotFound.code")),getMessage("userNotFound.msg"));
+    }
+
+    private String getMessage(String code){
+        return getMessage(code,null);
+    }
+    private String getMessage(String code,Object [] args){
+        return messageSource.getMessage(code,args, LocaleContextHolder.getLocale());
     }
 }
