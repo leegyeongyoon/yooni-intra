@@ -1,5 +1,7 @@
 package com.yooni.intra.exception;
 
+import com.yooni.intra.exception.detailException.AuthenticationEntryPointException;
+import com.yooni.intra.exception.detailException.SignFailedException;
 import com.yooni.intra.exception.detailException.UserNotFoundException;
 import com.yooni.intra.model.response.CommonResult;
 import com.yooni.intra.common.service.ResponseService;
@@ -35,6 +37,17 @@ public class ExceptionAdvice {
     @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
     protected CommonResult userNotFountException(HttpServletRequest request, UserNotFoundException e){
         return responseService.getFailResult(Integer.valueOf(getMessage("userNotFound.code")),getMessage("userNotFound.msg"));
+    }
+
+    @ExceptionHandler(SignFailedException.class)
+    @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
+    protected CommonResult signFailedException(HttpServletRequest request, SignFailedException e){
+        return responseService.getFailResult(Integer.valueOf(getMessage("signFailed.code")),getMessage("signFailed.msg"));
+    }
+
+    @ExceptionHandler(AuthenticationEntryPointException.class)
+    protected CommonResult authenticationEntryPointException(HttpServletRequest request, AuthenticationEntryPointException e){
+        return responseService.getFailResult(Integer.valueOf(getMessage("entrypointException.code")),getMessage("entrypointException.msg"));
     }
 
     private String getMessage(String code){

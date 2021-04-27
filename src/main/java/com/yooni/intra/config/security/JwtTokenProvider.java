@@ -4,6 +4,7 @@ import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jws;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
+import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -18,6 +19,7 @@ import java.util.Base64;
 import java.util.Date;
 import java.util.List;
 
+@RequiredArgsConstructor
 @Component
 public class JwtTokenProvider{
 
@@ -26,8 +28,8 @@ public class JwtTokenProvider{
 
     private long tockenValid = 1000L*60*60;
 
-    @Autowired
-    private UserDetailsService userDetailsService;
+    //@Autowired
+    private final UserDetailsService userDetailsService;
 
     @PostConstruct
     protected void init(){
@@ -45,21 +47,21 @@ public class JwtTokenProvider{
                 .signWith(SignatureAlgorithm.HS256,secretKey)
                 .compact();
     }
-
+    //조회
     public Authentication getAuthentication(String token){
         UserDetails userDetails = userDetailsService.loadUserByUsername(this.getUserPk(token));
         return new UsernamePasswordAuthenticationToken(userDetails,"",userDetails.getAuthorities());
     }
     //토큰 회원 구별정보 추출
     public String getUserPk(String token){
-        return Jwts.parser().setSigningKey(secretKey).parseClaimsJwt(token).getBody().getSubject();
+        return Jwts.parser().setSigningKey(secretKey).parseClaimsJws(token).getBody().getSubject();
     }
     //header에서 토큰 파싱
     public String resolveToken(HttpServletRequest request){
         return request.getHeader("X-AUTH-TOKEN");
     }
     //토큰 만료시간 확인
-    public boolean validateToekn(String jwtToken){
+    public boolean validateToken(String jwtToken){
         try{
             Jws<Claims> claims = Jwts.parser().setSigningKey(secretKey).parseClaimsJws(jwtToken);
             return !claims.getBody().getExpiration().before(new Date());

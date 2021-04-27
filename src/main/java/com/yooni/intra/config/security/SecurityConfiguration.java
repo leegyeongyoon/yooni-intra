@@ -1,5 +1,6 @@
 package com.yooni.intra.config.security;
 
+import com.yooni.intra.config.security.handler.AuthenticationEntryPointHandler;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -18,27 +19,29 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
 
     @Bean
     @Override
-    public AuthenticationManager authenticationManagerBean() throws Exception{
+    public AuthenticationManager authenticationManagerBean() throws Exception {
         return super.authenticationManagerBean();
     }
 
     @Override
-    protected void configure(HttpSecurity httpSecurity) throws Exception{
+    protected void configure(HttpSecurity httpSecurity) throws Exception {
         httpSecurity
                 .httpBasic().disable()
                 .csrf().disable()
                 .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS)
                 .and()
-                    .authorizeRequests()
-                    .antMatchers("/*/user","/*/user").permitAll()
-                    .anyRequest().hasRole("USER")
+                .authorizeRequests()
+                .antMatchers("/*/join", "/*/login", "/exception/**").permitAll()
+                .anyRequest().hasRole("USER")
                 .and()
-                    .addFilterBefore(new JwtAuthenticationFilter(jwtTokenProvider), UsernamePasswordAuthenticationFilter.class);
+                .exceptionHandling().authenticationEntryPoint(new AuthenticationEntryPointHandler())
+                .and()
+                .addFilterBefore(new JwtAuthenticationFilter(jwtTokenProvider), UsernamePasswordAuthenticationFilter.class);
 
     }
 
     @Override
-    public void configure(WebSecurity webSecurity){
-        webSecurity.ignoring().antMatchers("/h2-console","/v2/api-docs","/swagger-resources/**","/swagger-ui.html","/webjars/**","/swagger/**");
+    public void configure(WebSecurity webSecurity) {
+        webSecurity.ignoring().antMatchers("/h2-console", "/v2/api-docs", "/swagger-resources/**", "/swagger-ui.html", "/webjars/**", "/swagger/**");
     }
 }
