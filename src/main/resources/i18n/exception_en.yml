@@ -17,3 +17,7 @@ entrypointException:
 accessDeniedException:
     code: "-1003"
     msg: "A reousrce that can not be accessed with the privileges it has."
+
+communicationError:
+    code: "-1004"
+    msg: "An error occurred during communication."

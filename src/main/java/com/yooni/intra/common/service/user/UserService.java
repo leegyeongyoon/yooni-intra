@@ -1,4 +1,4 @@
-package com.yooni.intra.common.service;
+package com.yooni.intra.common.service.user;
 
 import com.yooni.intra.common.repository.UserJpaRepository;
 import com.yooni.intra.exception.detailException.UserNotFoundException;

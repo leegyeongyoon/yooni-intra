@@ -17,3 +17,7 @@ entrypointException:
 accessDeniedException:
   code: "-1003"
   msg: "보유한 권한으로 접근할 수 없는 리소스 입니다.."
+
+communicationError:
+  code: "-1004"
+  msg: "통신 중 오류가 발생하였습니다."

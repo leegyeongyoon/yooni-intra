@@ -33,7 +33,8 @@ public class UserEntity implements UserDetails {
     @Column(nullable = true,length = 100)
     private String name;
 
-    ;
+    @Column(length = 100)
+    private String provider;
 
     @ElementCollection(fetch = FetchType.EAGER)
     @Builder.Default
