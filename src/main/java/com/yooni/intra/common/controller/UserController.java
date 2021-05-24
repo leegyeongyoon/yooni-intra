@@ -1,8 +1,10 @@
 package com.yooni.intra.common.controller;
 
+import com.yooni.intra.common.entity.KakaoProfile;
 import com.yooni.intra.common.entity.UserEntity;
 import com.yooni.intra.common.repository.UserJpaRepository;
 import com.yooni.intra.common.service.ResponseService;
+import com.yooni.intra.common.service.user.KakaoService;
 import com.yooni.intra.config.security.JwtTokenProvider;
 import com.yooni.intra.exception.detailException.SignFailedException;
 import com.yooni.intra.exception.detailException.UserNotFoundException;
@@ -37,6 +39,9 @@ public class UserController {
     @Autowired
     private PasswordEncoder passwordEncoder;
 
+    @Autowired
+    private KakaoService kakaoService;
+
     @ApiOperation(value = "로그인", notes = "로그인")
     @PostMapping(value = "/login")
     public SingleResult<String> login(@ApiParam(value = "회원 ID", required = true) @RequestParam String userid, @ApiParam(value = "회원 PW", required = true) @RequestParam String password, @ApiParam(value = "lang", defaultValue = "ko") @RequestParam String lang) {
@@ -45,6 +50,15 @@ public class UserController {
             throw new SignFailedException();
         }
         return responseService.getSingleResult(jwtTokenProvider.createToken(userEntity.getUserid(), userEntity.getRoles()));
+    }
+
+    @ApiOperation(value = "소셜 로그인", notes = "카카오 로그인")
+    @PostMapping(value = "/login/{provider")
+    public SingleResult<String> loginByProvider(@ApiParam(value = "서비스 제공자 provider", required = true, defaultValue = "kakao") @PathVariable String provider,
+                                                @ApiParam(value = "소셜 access_token", required = true) @RequestParam String accessToken) {
+        KakaoProfile profile = kakaoService.getKakaoProfile(accessToken);
+        UserEntity userEntity = userJpaRepository.findByUseridAndProvider(String.valueOf(profile.getId()),provider).orElseThrow(UserNotFoundException::new);
+        return responseService.getSingleResult(jwtTokenProvider.createToken(String.valueOf(userEntity.getUserid()),userEntity.getRoles()));
     }
 
     @ApiImplicitParams({

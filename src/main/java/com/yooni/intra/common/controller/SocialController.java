@@ -1,6 +1,7 @@
 package com.yooni.intra.common.controller;
 
 import com.google.gson.Gson;
+import com.yooni.intra.common.service.user.KakaoService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.env.Environment;
@@ -23,8 +24,8 @@ public class SocialController {
     @Autowired
     private Gson gson;
 
-    //@Autowired
-   // private KakaoService kakaoService;
+    @Autowired
+    private KakaoService kakaoService;
 
     @Value("${spring.url.base}")
     private String baseUrl;
@@ -39,18 +40,17 @@ public class SocialController {
     public ModelAndView socialLogin(ModelAndView modelAndView){
         StringBuilder loginUrl = new StringBuilder()
                 .append(environment.getProperty("spring.social.kakao.url.login"))
-                .append("?client_id").append(kakaoClientId)
+                .append("?client_id=").append(kakaoClientId)
                 .append("&response_type=code")
-                .append("&redirect_url=").append(baseUrl).append(kakaoRedirect);
-
+                .append("&redirect_uri=").append(baseUrl).append(kakaoRedirect);
         modelAndView.addObject("loginUrl",loginUrl);
-        modelAndView.setViewName("login");
+        modelAndView.setViewName("social/login");
         return modelAndView;
     }
 
     @GetMapping(value = "/kakao")
     public ModelAndView redirectKakao(ModelAndView modelAndView, @RequestParam String code){
-     //   modelAndView.addObject("authInfo",kakaoService.getKakaoTokenInfo(code));
+        modelAndView.addObject("authInfo",kakaoService.getKakaoTokenInfo(code));
         modelAndView.setViewName("social/redirectKakao");
         return modelAndView;
     }
