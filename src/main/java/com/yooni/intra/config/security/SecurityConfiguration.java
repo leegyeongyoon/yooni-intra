@@ -31,7 +31,7 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
                 .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS)
                 .and()
                 .authorizeRequests()
-                .antMatchers("**/**","/*/join", "/*/login", "/exception/**","/social/**","/login").permitAll()
+                .antMatchers("/*/join","/*/join/**","/*/login/**", "/*/login", "/exception/**","/social/**","/login").permitAll()
                 .anyRequest().hasRole("USER")
                 .and()
                 .exceptionHandling().authenticationEntryPoint(new AuthenticationEntryPointHandler())

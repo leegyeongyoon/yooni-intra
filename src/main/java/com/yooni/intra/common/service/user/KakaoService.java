@@ -61,10 +61,11 @@ public class KakaoService {
         params.add("client_id",kakaoClientId);
         params.add("redirect_uri",baseUrl+kakaoRedirect);
         params.add("code",code);
-
+        System.out.println(params);
         HttpEntity<MultiValueMap<String,String>> request = new HttpEntity<>(params,headers);
         ResponseEntity<String> response = restTemplate.postForEntity(environment.getProperty("spring.social.kakao.url.token"), request,String.class);
         if(response.getStatusCode() == HttpStatus.OK){
+            System.out.println(response.getBody());
             return gson.fromJson(response.getBody(), RetKakaoAuth.class);
         }
         return null;
