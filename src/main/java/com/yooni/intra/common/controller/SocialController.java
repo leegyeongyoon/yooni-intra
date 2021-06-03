@@ -2,6 +2,7 @@ package com.yooni.intra.common.controller;
 
 import com.google.gson.Gson;
 import com.yooni.intra.common.service.user.KakaoService;
+import io.swagger.annotations.Api;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.env.Environment;
@@ -12,6 +13,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.client.RestTemplate;
 import org.springframework.web.servlet.ModelAndView;
 
+@Api(tags = {"2. Social"})
 @Controller
 @RequestMapping("/social/login")
 public class SocialController {

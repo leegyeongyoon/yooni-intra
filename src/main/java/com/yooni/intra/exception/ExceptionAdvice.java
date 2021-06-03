@@ -1,9 +1,6 @@
 package com.yooni.intra.exception;
 
-import com.yooni.intra.exception.detailException.AuthenticationEntryPointException;
-import com.yooni.intra.exception.detailException.SignFailedException;
-import com.yooni.intra.exception.detailException.UserExistException;
-import com.yooni.intra.exception.detailException.UserNotFoundException;
+import com.yooni.intra.exception.detailException.*;
 import com.yooni.intra.model.response.CommonResult;
 import com.yooni.intra.common.service.ResponseService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -54,6 +51,18 @@ public class ExceptionAdvice {
     @ExceptionHandler(UserExistException.class)
     protected CommonResult userExistException(HttpServletRequest request, UserExistException e){
         return responseService.getFailResult(Integer.valueOf(getMessage("existingUser.code")),getMessage("existingUser.msg"));
+    }
+
+    @ExceptionHandler(CNotOwnerException.class)
+    @ResponseStatus(HttpStatus.NON_AUTHORITATIVE_INFORMATION)
+    public CommonResult notOwnerException(HttpServletRequest request, CNotOwnerException e){
+        return responseService.getFailResult(Integer.valueOf(getMessage("nowOwner.code")),getMessage("nowOwner.msg"));
+    }
+
+    @ExceptionHandler(CResourceNotExistException.class)
+    @ResponseStatus(HttpStatus.NON_AUTHORITATIVE_INFORMATION)
+    public CommonResult resourceNotExistException(HttpServletRequest request, CResourceNotExistException e){
+        return responseService.getFailResult(Integer.valueOf(getMessage("resourceNotExist.code")),getMessage("resourceNotExist.msg"));
     }
 
     private String getMessage(String code){

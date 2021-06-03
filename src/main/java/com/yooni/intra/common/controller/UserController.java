@@ -74,9 +74,9 @@ public class UserController {
 
     @ApiOperation(value = "회원 가입", notes = "회원 가입.")
     @PostMapping(value = "/join")
-    public CommonResult save(@ApiParam(value = "회원 ID", required = true) @RequestParam String username, @ApiParam(value = "회원 PW", required = true) @RequestParam String password, @ApiParam(value = "회원 NAME", required = true) @RequestParam String name) {
+    public CommonResult save(@ApiParam(value = "회원 ID", required = true) @RequestParam String userid, @ApiParam(value = "회원 PW", required = true) @RequestParam String password, @ApiParam(value = "회원 NAME", required = true) @RequestParam String name) {
         userJpaRepository.save(UserEntity.builder()
-                .userid(username)
+                .userid(userid)
                 .name(name)
                 .password(passwordEncoder.encode(password))
                 .roles(Collections.singletonList("ROLE_USER"))
